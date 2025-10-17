@@ -1,0 +1,124 @@
+[
+  {
+    "id": 1,
+    "username": "daniel",
+    "salt": "6f40c2a44337ecb6a7562d2cc1bfe895",
+    "hash": "78524b507b3faa9d9793e12841e695c4f7c28932cd319f73b5014456deb92497",
+    "name": "Daniel",
+    "role": "admin",
+    "modules": [
+      "all"
+    ],
+    "permissions": [
+      "calendar:write"
+    ],
+    "greeting": null
+  },
+  {
+    "id": 2,
+    "username": "techniker",
+    "salt": "45ecf981e1d047c2abe40d34b4b827bb",
+    "hash": "2e491fb20e98a99dbc092bb5bc00931802afb57c7c3028ede4e181c42fb423fc",
+    "name": "Technik-Team",
+    "role": "labor",
+    "modules": [
+      "calendar",
+      "orders"
+    ],
+    "permissions": [
+      "calendar:write"
+    ],
+    "greeting": null
+  },
+  {
+    "id": 3,
+    "username": "empfang",
+    "salt": "0d56e3a3e14fe2ce223075f36dcfd517",
+    "hash": "4516108ff32115bc83469ad25bfcaf90eaec418cf2efcd088be5104e64960e02",
+    "name": "Empfang",
+    "role": "frontdesk",
+    "modules": [
+      "forms",
+      "calendar",
+      "support"
+    ],
+    "permissions": [
+      "calendar:write"
+    ],
+    "greeting": null
+  },
+  {
+    "id": 4,
+    "username": "finanzen",
+    "salt": "47ef93f3c79442b8258fea3c815f0087",
+    "hash": "6ed3e000fdc743da8ba84760dbe7ad5d9b95efb8e7d1caa433a174d7cb73c1f9",
+    "name": "Finanzen",
+    "role": "finance",
+    "modules": [
+      "analytics"
+    ],
+    "permissions": [],
+    "greeting": null
+  },
+  {
+    "id": 5,
+    "username": "orthodont",
+    "salt": "f39280e0e1763356020cc4cd487c06cc",
+    "hash": "fc90ed799b73944ff324347ca4591c948049207dc895d6a22d5e6792789e088d",
+    "name": "Dr. Can",
+    "role": "management",
+    "modules": [
+      "all"
+    ],
+    "permissions": [
+      "calendar:write"
+    ],
+    "greeting": "Herzlich willkommen Simon Can"
+  },
+  {
+    "id": 6,
+    "username": "charlottenburg",
+    "salt": "a84e6eb8f0798b4c6541cd06b3f4d545",
+    "hash": "65f4e5836a5349d0f1193d2be2093f4ad09140344e00fb9f5746dcbe19d120c8",
+    "name": "Rezeption Charlottenburg",
+    "role": "frontdesk",
+    "modules": [
+      "forms",
+      "orders",
+      "support",
+      "calendar"
+    ],
+    "permissions": [
+      "calendar:write"
+    ],
+    "greeting": null
+  },
+  {
+    "id": 7,
+    "username": "techniker1",
+    "salt": "85ec9354d1d8c81026a887f32b51d445",
+    "hash": "466c3db39fbfebde50ce43009b59ab46bbb5d946038eedece59a806649ab15e3",
+    "name": "Labor Charlottenburg",
+    "role": "labor",
+    "modules": [
+      "calendar"
+    ],
+    "permissions": [],
+    "greeting": null
+  },
+  {
+    "id": 8,
+    "username": "zb",
+    "salt": "0fd8404e2a1d4b16f07e991131f08387",
+    "hash": "bc1f3715f5a773e8dc0138e43330222bb93e0a96ad68bab9e449a3524db84fd5",
+    "name": "ZB Team",
+    "role": "zb",
+    "modules": [
+      "calendar"
+    ],
+    "permissions": [
+      "calendar:write"
+    ],
+    "greeting": null
+  }
+]

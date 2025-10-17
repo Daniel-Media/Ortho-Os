@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "title": "Test Ticket",
+    "description": "Just test",
+    "priority": "medium",
+    "location": null,
+    "responsible": null,
+    "dueDate": null,
+    "status": "open",
+    "createdDate": "2025-10-15T09:40:02.310Z",
+    "requesterName": "Daniel",
+    "requesterRole": "admin",
+    "attachments": [],
+    "email": null
+  },
+  {
+    "id": 2,
+    "title": "PC empfang 1",
+    "description": "PC empfang 1 praxident geht nicht",
+    "priority": "medium",
+    "location": null,
+    "responsible": null,
+    "dueDate": null,
+    "status": "closed",
+    "createdDate": "2025-10-15T12:25:46.426Z",
+    "requesterName": "Empfang",
+    "requesterRole": "frontdesk",
+    "attachments": [],
+    "email": "djogeleit15@gmail.com"
+  },
+  {
+    "id": 3,
+    "title": "Hilfe bei Installation",
+    "description": "Ich muss Praxident Herunterladen aber weiÃ nicht wie es geht",
+    "priority": "medium",
+    "location": null,
+    "responsible": null,
+    "dueDate": null,
+    "status": "open",
+    "createdDate": "2025-10-15T12:38:12.971Z",
+    "requesterName": "Dr. Can",
+    "requesterRole": "management",
+    "attachments": [],
+    "email": "djogeleit15@gmail.com"
+  }
+]
