@@ -1,0 +1,13 @@
+{
+  "name": "orth-os-server",
+  "version": "1.0.0",
+  "description": "Backend server for Ortho OS",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "init-db": "node init_db.js"
+  },
+  "dependencies": {
+    "nodemailer": "^6.10.1"
+  }
+}

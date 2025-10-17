@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Ortho OS – Dashboard</title>
+<style>
+  /* ================= THEME TOKENS ================= */
+  :root{
+    --accent:#4f7cff;
+    --accent-2:#6ea0ff;
+    --bg:#0f1420;
+    --panel:#131a27;
+    --stroke:#1f2a3f;
+    --txt:#e6edf7;
+    --muted:#9db0d1;
+    --tile-grad: linear-gradient(180deg,#141d31,#0f1726);
+    --tile-tint: radial-gradient(600px 280px at 80% -10%, #2b1e0b25 0%, transparent 60%),
+                 radial-gradient(600px 280px at -10% 110%, #12213a40 0%, transparent 60%);
+    --glow: 0 18px 60px rgba(0,0,0,.45);
+  }
+  .light{
+    --bg:#f6f8fc;
+    --panel:#ffffff;
+    --stroke:#e5eaf4;
+    --txt:#0c1530;
+    --muted:#54607a;
+    --tile-grad: linear-gradient(180deg,#ffffff,#f6f8ff);
+    --tile-tint: radial-gradient(600px 260px at 85% -15%, #fddfb640 0%, transparent 60%),
+                 radial-gradient(600px 260px at -10% 110%, #e7efff70 0%, transparent 60%);
+    --glow: 0 16px 40px rgba(17,35,75,.12);
+  }
+
+  /* ================= GLOBAL ================= */
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font:17px/1.6 ui-sans-serif,system-ui,-apple-system,Inter,Segoe UI,Roboto,Arial;
+    background: radial-gradient(1200px 700px at 12% -10%, #18223a 0%, var(--bg) 60%) fixed;
+    color:var(--txt);
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  }
+  .light body{ background:#f5f7fd; }
+
+  .wrap{max-width:1280px;margin:40px auto;padding:0 22px 96px}
+  .panel{
+    background:var(--panel);
+    border:1px solid var(--stroke);
+    border-radius:26px;
+    box-shadow:0 28px 90px rgba(0,0,0,.45);
+    padding:32px 28px 14px;
+    position:relative;
+  }
+
+  .is-hidden{display:none!important;}
+
+  /* ================= HEADER ================= */
+  .topbar{
+    display:flex;align-items:center;gap:16px; padding:6px 0 18px;
+  }
+  .brand{
+    display:flex;align-items:center;gap:12px; padding:10px 14px;
+    border-radius:14px; border:1px solid var(--stroke); background:linear-gradient(180deg,#141d2a,#101724);
+  }
+  .light .brand{ background:#fff }
+  .dot{
+    width:18px;height:18px;border-radius:50%;
+    background:linear-gradient(180deg,#82b2ff,#4f7cff);
+    box-shadow:0 0 0 6px #4f7cff1f, 0 8px 22px #4f7cff55, inset 0 1px 0 #ffffffa8;
+  }
+  .brand .name{
+    font-weight:900; letter-spacing:.2px; font-size:28px;
+  }
+  .brand .name b{ color:var(--accent); text-shadow:0 0 20px #4f7cff55; }
+
+  .search{
+    display:flex;align-items:center; gap:10px; margin-left:auto;
+    background:linear-gradient(180deg,#121a2a,#0e1726); border:1px solid var(--stroke);
+    border-radius:14px; padding:12px 16px; min-width:320px;
+  }
+  .light .search{ background:#fff }
+  .search input{border:0;background:transparent;color:var(--txt);outline:0; width:100%}
+  .top-actions{display:flex;align-items:center; gap:10px; margin-left:12px}
+  .mode{border:1px solid var(--stroke);background:linear-gradient(180deg,#121a2a,#0e1726); color:var(--txt);
+        width:48px;height:48px;border-radius:12px; cursor:pointer}
+  .top-actions .logout{font-size:22px; display:flex; align-items:center; justify-content:center;}
+  .avatar{display:flex;align-items:center; gap:10px; padding:12px 14px;border:1px solid var(--stroke);
+          background:linear-gradient(180deg,#121a2a,#0e1726); border-radius:12px; font-weight:700;}
+  .avatar .role{opacity:.6;font-weight:600;}
+  .light .mode,.light .avatar{ background:#fff }
+
+  /* Floating tooth badge from login design */
+  /* Removed per instructions */
+
+  /* ================= HERO ================= */
+  .hero{padding:22px 12px 8px}
+  .hero h1{margin:10px 0 6px; font-weight:900; letter-spacing:.2px; font-size:clamp(26px,3.2vw,40px)}
+  .hero p{margin:0; color:var(--muted); font-weight:600}
+
+  /* ================= GRID (Tiles aus Bild 2) ================= */
+  .grid{
+    display:grid; gap:22px; padding:22px 8px 34px;
+    grid-template-columns: repeat(12, 1fr);
+  }
+  .empty-state{
+    margin:0 8px 36px;
+    padding:20px 24px;
+    border-radius:18px;
+    border:1px dashed var(--stroke);
+    background:linear-gradient(180deg,#161f34,#0f1726);
+    color:var(--muted);
+    font-weight:600;
+    text-align:center;
+  }
+  .light .empty-state{
+    background:#ffffff;
+  }
+  /* 3 Spalten Desktop – 12-Spalten Grid für schöne Breakpoints */
+  .tile{
+    grid-column: span 4;
+    display:flex; flex-direction:column; gap:14px;
+    background: var(--tile-grad);
+    border:1px solid var(--stroke);
+    border-radius:20px;
+    padding:22px;
+    box-shadow: 0 18px 46px rgba(0,0,0,.35);
+    overflow:hidden;
+    position:relative;
+    transition:transform .2s ease, box-shadow .25s ease, filter .25s ease;
+  }
+  .tile:hover{ transform:translateY(-2px); box-shadow:0 28px 80px rgba(0,0,0,.45); filter:saturate(1.05); }
+  .tile::after{content:""; position:absolute; inset:0; background:var(--tile-tint); pointer-events:none}
+  .tile-head{display:flex; align-items:center; gap:12px}
+  .tile-ico{
+    width:54px;height:54px;border-radius:16px; display:grid; place-items:center; font-size:28px;
+    background:linear-gradient(180deg,#1a2336,#121a2a); border:1px solid #223151;
+    box-shadow:inset 0 1px 0 #ffffff22;
+    text-shadow:0 0 18px #4f7cff55, 0 2px 0 #00000030;
+    color:inherit;
+  }
+  .tile-ico svg{ width:28px; height:28px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round }
+  .light .tile-ico{ background:#fff; border-color:#e6eaf4 }
+  .tile-title{font-weight:900; font-size:22px}
+  .tile-sub{color:var(--muted); font-weight:600}
+  .tile-bottom{display:flex; align-items:center; justify-content:flex-start; margin-top:auto}
+  .pill{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:12px 18px; border-radius:999px; border:1px solid #2a3960;
+    background:linear-gradient(180deg,#3f66ff,#4f7cff); color:#fff; font-weight:900; letter-spacing:.2px; cursor:pointer;
+    box-shadow:0 10px 30px #4f7cff55, inset 0 1px 0 #ffffff40;
+    transition:transform .12s ease, box-shadow .18s ease, filter .18s ease;
+  }
+  .pill:hover{transform:translateY(-1px); filter:saturate(1.08); box-shadow:0 16px 40px #4f7cff66, inset 0 1px 0 #ffffff66}
+  .pill:active{transform:translateY(0)}
+  .light .pill{ background:#fff; border-color:#e5eaf4; color:#0e1936 }
+
+  /* Farbe je Modul (wie im zweiten Screenshot) */
+  .ico-yellow{ color:#f5b451; filter:saturate(1.1) brightness(1.05); }
+  .ico-orange{ color:#f59e0b; filter:saturate(1.1) brightness(1.05); }
+  .ico-blue{ color:#5fa8ff; filter:saturate(1.1) brightness(1.05); }
+  .ico-green{ color:#22c55e; filter:saturate(1.1) brightness(1.05); }
+  .ico-pink{ color:#ff6ea8; filter:saturate(1.1) brightness(1.05); }
+  .ico-cyan{ color:#34d0ff; filter:saturate(1.1) brightness(1.05); }
+
+  /* ================= RESPONSIVE ================= */
+  @media (max-width:1100px){ .tile{grid-column: span 6} }
+  @media (max-width:680px){
+    .grid{gap:14px}
+    .tile{grid-column: span 12}
+    .search{display:none}
+  }
+</style>
+<!-- Icon sprite -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="ico-doc" viewBox="0 0 24 24">
+    <path d="M8 3h6l5 5v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/>
+    <path d="M14 3v6h6"/>
+  </symbol>
+  <symbol id="ico-cube" viewBox="0 0 24 24">
+    <path d="M12 2l8 4-8 4-8-4 8-4z"/>
+    <path d="M4 6v8l8 4 8-4V6"/>
+    <path d="M12 10v8"/>
+  </symbol>
+  <symbol id="ico-megaphone" viewBox="0 0 24 24">
+    <path d="M3 11v2a2 2 0 0 0 2 2h2l4 3V6l-4 3H5a2 2 0 0 0-2 2z"/>
+    <path d="M17 7v10"/>
+    <path d="M21 9v6"/>
+  </symbol>
+  <symbol id="ico-gear" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="3"/>
+    <path d="M19.4 15a7.9 7.9 0 0 0 .1-2l2-1-2-4-2 1a7.9 7.9 0 0 0-1.7-1l.1-2.3h-4l.1 2.3a7.9 7.9 0 0 0-1.7 1l-2-1-2 4 2 1a7.9 7.9 0 0 0 0 2l-2 1 2 4 2-1a7.9 7.9 0 0 0 1.7 1l-.1 2.3h4l-.1-2.3a7.9 7.9 0 0 0 1.7-1l2 1 2-4-2-1z"/>
+  </symbol>
+  <symbol id="ico-chart" viewBox="0 0 24 24">
+    <path d="M4 19V5h16"/>
+    <polyline points="6,15 10,11 13,14 18,9"/>
+  </symbol>
+  <symbol id="ico-calendar" viewBox="0 0 24 24">
+    <rect x="3" y="5" width="18" height="16" rx="2" ry="2"/>
+    <path d="M16 3v4M8 3v4M3 9h18"/>
+  </symbol>
+</svg>
+</head>
+<body>
+  <div class="wrap">
+    <div class="panel">
+
+      <!-- Topbar (Bild 1) -->
+      <div class="topbar">
+        <div class="brand">
+          <div class="dot" aria-hidden="true"></div>
+          <div class="name">Ortho <b>OS</b></div>
+        </div>
+
+        <div class="search" role="search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" />
+            <path d="M20 20l-3.6-3.6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input placeholder="Suchen …" aria-label="Suchen" />
+        </div>
+
+        <div class="top-actions">
+          <button class="mode" id="modeBtn" title="Theme wechseln">🌙</button>
+          <button class="mode logout" id="logoutBtn" title="Abmelden">⎋</button>
+          <div class="avatar" id="userBadge">
+            <span aria-hidden="true">👤</span>
+            <strong id="userName">Gast</strong>
+            <span class="role" id="userRole">· Rolle</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero -->
+      <div class="hero">
+        <h1 id="heroGreeting" data-default="Herzlich willkommen bei Ortho OS">Herzlich willkommen bei Ortho OS</h1>
+        <p>Dein zentrales Tool für alle Abläufe bei Orthodont.</p>
+      </div>
+
+      <!-- Kachel-Actions (optional) -->
+      <div class="grid" style="padding-top:6px">
+        <!-- Formulare -->
+        <section class="tile" data-module="forms">
+          <div class="tile-head">
+            <div class="tile-ico ico-yellow"><svg><use href="#ico-doc"/></svg></div>
+            <div>
+              <div class="tile-title">Formulare</div>
+              <div class="tile-sub">Digitale Einwilligungen &amp; PDFs</div>
+            </div>
+          </div>
+          <div class="tile-bottom">
+            <button class="pill">Öffnen</button>
+          </div>
+        </section>
+
+        <!-- Bestellungen -->
+        <section class="tile" data-module="orders">
+          <div class="tile-head">
+            <div class="tile-ico ico-orange"><svg><use href="#ico-cube"/></svg></div>
+            <div>
+              <div class="tile-title">Bestellungen</div>
+              <div class="tile-sub">Material &amp; Laboraufträge</div>
+            </div>
+          </div>
+          <div class="tile-bottom">
+            <button class="pill">Öffnen</button>
+          </div>
+        </section>
+
+        <!-- Marketing -->
+        <section class="tile" data-module="marketing">
+          <div class="tile-head">
+            <div class="tile-ico ico-yellow"><svg><use href="#ico-megaphone"/></svg></div>
+            <div>
+              <div class="tile-title">Marketing</div>
+              <div class="tile-sub">Posts, Assets, Kampagnen</div>
+            </div>
+          </div>
+          <div class="tile-bottom">
+            <button class="pill">Öffnen</button>
+          </div>
+        </section>
+
+        <!-- Support -->
+        <section class="tile" data-module="support">
+          <div class="tile-head">
+            <div class="tile-ico ico-blue"><svg><use href="#ico-gear"/></svg></div>
+            <div>
+              <div class="tile-title">Support</div>
+              <div class="tile-sub">Tickets &amp; interne Meldungen</div>
+            </div>
+          </div>
+          <div class="tile-bottom">
+            <button class="pill">Öffnen</button>
+          </div>
+        </section>
+
+        <!-- Analyse -->
+        <section class="tile" data-module="analytics">
+          <div class="tile-head">
+            <div class="tile-ico ico-cyan"><svg><use href="#ico-chart"/></svg></div>
+            <div>
+              <div class="tile-title">Analyse</div>
+              <div class="tile-sub">KPIs &amp; Auslastung</div>
+            </div>
+          </div>
+          <div class="tile-bottom">
+            <button class="pill">Öffnen</button>
+          </div>
+        </section>
+
+        <!-- Kalender -->
+        <section class="tile" data-module="calendar">
+          <div class="tile-head">
+            <div class="tile-ico ico-blue"><svg><use href="#ico-calendar"/></svg></div>
+            <div>
+              <div class="tile-title">Kalender</div>
+              <div class="tile-sub">Termine je Standort/Techniker</div>
+            </div>
+          </div>
+          <div class="tile-bottom">
+            <button class="pill" onclick="location.href='Laborkalender.html'">Öffnen</button>
+          </div>
+        </section>
+      </div>
+      <div class="empty-state" id="moduleEmptyState" hidden>
+        Für deine Rolle wurden noch keine Bereiche freigeschaltet. Bitte kontaktiere eine Administratorin oder einen Administrator.
+      </div>
+    </div>
+  </div>
+
+<script>
+  (function(){
+    const SESSION_KEY = "orthoos-session";
+    const ROLE_LABELS = {
+      admin: "Admin",
+      labor: "Labor",
+      frontdesk: "Empfang",
+      finance: "Finanzen",
+      management: "Management",
+      zb: "Zahnarztbereich"
+    };
+
+    function readSession(){
+      const raw = localStorage.getItem(SESSION_KEY);
+      if(!raw){ return null; }
+      try{
+        return JSON.parse(raw);
+      }catch(err){
+        console.warn("Konnte Session nicht lesen, starte neu.", err);
+        localStorage.removeItem(SESSION_KEY);
+        return null;
+      }
+    }
+
+    const session = readSession();
+    if(!session){
+      window.location.replace("Login.html");
+      return;
+    }
+
+    const heroTitle = document.getElementById("heroGreeting");
+    if(heroTitle){
+      const baseText = heroTitle.dataset.default || heroTitle.textContent || "Herzlich willkommen bei Ortho OS";
+      if(session.greeting){
+        heroTitle.textContent = session.greeting;
+      }else{
+        heroTitle.textContent = session.name ? `Herzlich willkommen, ${session.name}` : baseText;
+      }
+    }
+
+    const nameNode = document.getElementById("userName");
+    if(nameNode){
+      nameNode.textContent = session.name || session.username || "Benutzer";
+    }
+
+    const roleNode = document.getElementById("userRole");
+    if(roleNode){
+      const normalizedRole = (session.role || "").toLowerCase();
+      const label = ROLE_LABELS[normalizedRole] || (normalizedRole ? normalizedRole.charAt(0).toUpperCase() + normalizedRole.slice(1) : "");
+      roleNode.textContent = label ? `· ${label}` : "";
+      if(!label){ roleNode.setAttribute("aria-hidden","true"); }
+      else{ roleNode.removeAttribute("aria-hidden"); }
+    }
+
+    const badge = document.getElementById("userBadge");
+    if(badge && session.role){ badge.dataset.role = session.role; }
+
+    const allowed = Array.isArray(session.modules) ? session.modules : [];
+    const moduleSet = new Set(allowed);
+    const hasAll = moduleSet.has("all") || moduleSet.has("*");
+
+    let visibleTiles = 0;
+    document.querySelectorAll("[data-module]").forEach(tile=>{
+      const moduleId = tile.dataset.module;
+      if(hasAll || !moduleId || moduleSet.has(moduleId)){
+        tile.classList.remove("is-hidden");
+        visibleTiles++;
+      }else{
+        tile.classList.add("is-hidden");
+      }
+    });
+
+    const emptyState = document.getElementById("moduleEmptyState");
+    if(emptyState){
+      emptyState.hidden = visibleTiles > 0;
+    }
+
+    const logoutBtn = document.getElementById("logoutBtn");
+    if(logoutBtn){
+      logoutBtn.addEventListener("click", ()=>{
+        localStorage.removeItem(SESSION_KEY);
+        localStorage.removeItem('orthoos-token');
+        window.location.href = "Login.html?logout=1";
+      });
+    }
+
+    const themeBtn = document.getElementById("modeBtn");
+    const isLight = localStorage.getItem("orthoos-theme") === "light";
+    if(isLight){
+      document.documentElement.classList.add("light");
+      if(themeBtn){ themeBtn.textContent = "☀️"; }
+    }
+
+    if(themeBtn){
+      themeBtn.addEventListener("click", ()=>{
+        document.documentElement.classList.toggle("light");
+        const light = document.documentElement.classList.contains("light");
+        themeBtn.textContent = light ? "☀️" : "🌙";
+        localStorage.setItem("orthoos-theme", light ? "light" : "dark");
+      });
+    }
+
+    const supportBtn = document.querySelector('[data-module="support"] .pill');
+    if(supportBtn){
+      supportBtn.addEventListener('click', ()=>{
+        window.location.href = 'Support.html';
+      });
+    }
+  })();
+</script>
+</body>
+</html>

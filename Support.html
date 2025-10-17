@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="de" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ortho OS – Support Center</title>
+  <style>
+    /* =============== THEME TOKENS (Dashboard Matching) =============== */
+    :root{
+      --accent:#4f7cff;
+      --accent-2:#6ea0ff;
+      --accent-warm:#ff9f5a;
+      --accent-green:#33d6a4;
+      --accent-danger:#ff6b87;
+      --bg:#0f1420;
+      --panel:#131a27;
+      --stroke:#1f2a3f;
+      --txt:#e6edf7;
+      --muted:#9db0d1;
+      --tile-grad:linear-gradient(180deg,#141d31,#0f1726);
+      --tile-tint:radial-gradient(600px 280px at 80% -10%, #2b1e0b25 0%, transparent 60%),
+                   radial-gradient(600px 280px at -10% 110%, #12213a40 0%, transparent 60%);
+      --glow:0 28px 90px rgba(0,0,0,.45);
+      --scrollbar:rgba(79,124,255,.35);
+      --bg-emphasis:#18223a;
+    }
+    :root[data-theme="light"]{
+      --bg:#f6f8fc;
+      --panel:#ffffff;
+      --stroke:#e5eaf4;
+      --txt:#0c1530;
+      --muted:#54607a;
+      --tile-grad:linear-gradient(180deg,#ffffff,#f6f8ff);
+      --tile-tint:radial-gradient(600px 260px at 85% -15%, #fddfb640 0%, transparent 60%),
+                   radial-gradient(600px 260px at -10% 110%, #e7efff70 0%, transparent 60%);
+      --glow:0 18px 50px rgba(17,35,75,.14);
+      --scrollbar:rgba(79,124,255,.4);
+      --bg-emphasis:#e5ecff;
+    }
+
+    /* =============== GLOBAL STRUCTURE =============== */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font:17px/1.6 ui-sans-serif,system-ui,-apple-system,Inter,Segoe UI,Roboto,Arial;
+      background:radial-gradient(1200px 700px at 12% -10%, var(--bg-emphasis) 0%, var(--bg) 60%) fixed;
+      color:var(--txt);
+      -webkit-font-smoothing:antialiased;
+      transition:background .3s ease,color .3s ease;
+    }
+    [data-theme="light"] body{
+      background:radial-gradient(1200px 700px at 12% -10%, var(--bg-emphasis) 0%, var(--bg) 70%) fixed;
+    }
+    body::before,
+    body::after{
+      content:"";
+      position:fixed;
+      pointer-events:none;
+      z-index:-2;
+      mix-blend-mode:screen;
+    }
+    body::before{
+      inset:-160px;
+      background:
+        radial-gradient(520px 420px at 12% 8%, rgba(79,124,255,.45) 0%, transparent 60%),
+        radial-gradient(620px 420px at 82% -12%, rgba(112,91,255,.35) 0%, transparent 62%),
+        radial-gradient(420px 360px at 74% 82%, rgba(51,214,196,.32) 0%, transparent 70%);
+      opacity:.9;
+    }
+    body::after{
+      inset:-200px;
+      background:
+        radial-gradient(360px 300px at 16% 86%, rgba(255,143,92,.28) 0%, transparent 70%),
+        radial-gradient(460px 360px at 90% 60%, rgba(79,124,255,.24) 0%, transparent 72%);
+      opacity:.75;
+    }
+    [data-theme="light"] body::before{
+      mix-blend-mode:normal;
+      opacity:.5;
+      background:
+        radial-gradient(520px 420px at 14% 6%, rgba(79,124,255,.26) 0%, transparent 60%),
+        radial-gradient(620px 420px at 80% -10%, rgba(112,91,255,.18) 0%, transparent 62%),
+        radial-gradient(420px 360px at 74% 82%, rgba(117,171,255,.22) 0%, transparent 70%);
+    }
+    [data-theme="light"] body::after{
+      background:
+        radial-gradient(360px 300px at 16% 86%, rgba(255,196,122,.22) 0%, transparent 70%),
+        radial-gradient(460px 360px at 90% 50%, rgba(92,146,255,.22) 0%, transparent 72%);
+      opacity:.52;
+    }
+    .wrap{max-width:1280px;margin:40px auto;padding:0 22px 96px}
+    .is-hidden{display:none!important;}
+
+    .panel{
+      background:var(--panel);
+      border:1px solid var(--stroke);
+      border-radius:26px;
+      box-shadow:var(--glow);
+      padding:34px 30px 30px;
+      position:relative;
+      overflow:hidden;
+    }
+    .panel::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:radial-gradient(680px 420px at 102% -20%, rgba(79,124,255,.28) 0%, transparent 72%);
+      opacity:.7;
+      pointer-events:none;
+    }
+    [data-theme="light"] .panel::after{opacity:.4;}
+    .panel-inner{position:relative;z-index:1;}
+
+    /* =============== TOP BAR =============== */
+    .topbar{
+      display:flex;
+      align-items:center;
+      gap:18px;
+      padding-bottom:20px;
+      border-bottom:1px solid var(--stroke);
+      margin-bottom:24px;
+      flex-wrap:wrap;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:10px 14px;
+      border-radius:16px;
+      border:1px solid var(--stroke);
+      background:linear-gradient(180deg,#141d2a,#101724);
+      box-shadow:0 16px 36px rgba(0,0,0,.4);
+    }
+    [data-theme="light"] .brand{background:#fff;box-shadow:none;}
+    .dot{
+      width:18px;height:18px;border-radius:50%;
+      background:linear-gradient(180deg,#82b2ff,#4f7cff);
+      box-shadow:0 0 0 6px #4f7cff1f, 0 8px 22px #4f7cff55, inset 0 1px 0 #ffffffa8;
+    }
+    .brand .name{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    .brand .brand-main{
+      font-weight:900;
+      letter-spacing:.24px;
+      font-size:30px;
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+    .brand .brand-main b{color:var(--accent);text-shadow:0 0 26px #4f7cff55;}
+    .ticket-icon{
+      width:42px;
+      height:42px;
+      border-radius:10px;
+      background:linear-gradient(135deg,#ffe772,#f0b92e);
+      display:grid;
+      place-items:center;
+      font-size:22px;
+      color:#241b02;
+      box-shadow:0 10px 26px rgba(255,183,71,.4);
+    }
+    .brand .brand-support{
+      font-size:20px;
+      font-weight:800;
+      letter-spacing:.36px;
+      text-transform:uppercase;
+      color:#f4f5fa;
+      text-shadow:0 6px 16px rgba(15,18,30,.65);
+    }
+    [data-theme="light"] .ticket-icon{
+      background:linear-gradient(135deg,#ffe691,#ffd663);
+      color:#20180a;
+      box-shadow:0 8px 18px rgba(255,214,99,.32);
+    }
+    [data-theme="light"] .brand .brand-support{
+      color:#1a2135;
+      text-shadow:0 4px 12px rgba(26,33,53,.18);
+    }
+
+    .status-chip{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:14px;
+      border:1px solid var(--stroke);
+      background:linear-gradient(180deg,#121a2a,#0e1726);
+      color:var(--muted);
+      font-weight:600;
+    }
+    [data-theme="light"] .status-chip{
+      background:#ffffff;
+      color:#1a2135;
+      border-color:rgba(26,33,53,.08);
+      box-shadow:0 12px 22px rgba(26,33,53,.1);
+    }
+    .status-indicator{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:linear-gradient(180deg,#4f7cff,#2a5eff);
+      box-shadow:0 0 12px rgba(79,124,255,.55);
+    }
+    .status-indicator.offline{
+      background:linear-gradient(180deg,#ff6b6b,#ff385c);
+      box-shadow:0 0 12px rgba(255,107,107,.55);
+    }
+
+    .top-actions{
+      margin-left:auto;
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    .dash-link{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:11px 16px;
+      border-radius:12px;
+      border:1px solid var(--stroke);
+      background:linear-gradient(180deg,#121a2a,#0e1726);
+      color:var(--txt);
+      font-weight:700;
+      text-decoration:none;
+      transition:transform .16s ease, box-shadow .2s ease, filter .16s ease;
+    }
+    .dash-link:hover{
+      transform:translateY(-1px);
+      filter:saturate(1.08);
+      box-shadow:0 18px 40px rgba(0,0,0,.35);
+    }
+    [data-theme="light"] .dash-link{
+      background:#ffffff;
+      color:#1a2135;
+      border-color:rgba(26,33,53,.08);
+      box-shadow:0 12px 26px rgba(26,33,53,.12);
+    }
+    
+    .mode{
+      width:48px;height:48px;border-radius:12px;
+      border:1px solid var(--stroke);
+      background:linear-gradient(180deg,#121a2a,#0e1726);
+      color:var(--txt);
+      display:grid;place-items:center;
+      font-size:20px;cursor:pointer;
+      transition:transform .18s ease, box-shadow .2s ease;
+    }
+    .mode:hover{transform:translateY(-1px);box-shadow:0 18px 38px rgba(0,0,0,.35);}
+    [data-theme="light"] .mode{background:#fff;}
+
+    /* =============== HERO =============== */
+    .hero{padding:22px 10px 26px;}
+    .hero h1{
+      margin:0;
+      font-weight:900;
+      letter-spacing:.18px;
+      font-size:clamp(26px,3.2vw,40px);
+    }
+    .hero p{margin:8px 0 0;color:var(--muted);font-weight:600;max-width:560px;}
+
+    /* =============== LAYOUT =============== */
+    .support-flex{
+      display:grid;
+      gap:26px;
+      grid-template-columns:minmax(0,1.1fr) minmax(0,2fr);
+    }
+    @media (max-width:1100px){
+      .support-flex{grid-template-columns:1fr;}
+      .status-chip{margin-left:0;}
+    }
+    body.support--requester .support-flex{grid-template-columns:1fr;}
+
+    .tickets-shell,
+    .form-shell{
+      background:linear-gradient(180deg,#141d31,#0f1726);
+      border:1px solid var(--stroke);
+      border-radius:22px;
+      padding:24px 24px 20px;
+      box-shadow:0 20px 60px rgba(0,0,0,.45);
+      position:relative;
+      overflow:hidden;
+    }
+    .tickets-shell::after,
+    .form-shell::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:var(--tile-tint);
+      opacity:.74;
+      pointer-events:none;
+    }
+    .tickets-shell>*,
+    .form-shell>*{position:relative;z-index:1;}
+    [data-theme="light"] .tickets-shell,
+    [data-theme="light"] .form-shell{
+      background:#fff;
+      box-shadow:0 16px 40px rgba(17,35,75,.18);
+    }
+
+    .section-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap:16px;
+      flex-wrap:wrap;
+      margin-bottom:18px;
+    }
+    .section-head h2{margin:0;font-size:22px;font-weight:800;}
+    .section-head p{margin:6px 0 0;color:var(--muted);font-weight:600;font-size:14px;}
+
+    .filters{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .filter-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:9px 16px;
+      border-radius:999px;
+      background:linear-gradient(180deg,#121a2a,#0e1726);
+      border:1px solid var(--stroke);
+      color:var(--muted);
+      font-weight:600;
+      cursor:pointer;
+      letter-spacing:.1px;
+      transition:transform .16s ease, box-shadow .2s ease, color .16s ease;
+    }
+    .filter-chip:hover{transform:translateY(-1px);color:var(--txt);}
+    .filter-chip.active{
+      background:linear-gradient(180deg,#3f66ff,#4f7cff);
+      color:#fff;
+      border-color:transparent;
+      box-shadow:0 16px 40px rgba(79,124,255,.45);
+    }
+    [data-theme="light"] .filter-chip{background:#f2f5ff;}
+    body.support--requester .filters,
+    body.support--requester .status-chip{display:none;}
+    body.support--requester .ticket-actions{display:none;}
+
+    .tickets-list{
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      max-height:620px;
+      overflow:auto;
+      padding-right:6px;
+    }
+    .tickets-list::-webkit-scrollbar{width:8px}
+    .tickets-list::-webkit-scrollbar-thumb{
+      background:var(--scrollbar);
+      border-radius:999px;
+    }
+
+    .ticket-card{
+      background:var(--tile-grad);
+      border:1px solid var(--stroke);
+      border-radius:20px;
+      padding:20px 22px;
+      box-shadow:0 20px 50px rgba(0,0,0,.4);
+      transition:transform .2s ease, box-shadow .25s ease, filter .25s ease;
+      position:relative;
+      overflow:hidden;
+    }
+    .ticket-card::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:radial-gradient(420px 240px at 110% -20%, rgba(79,124,255,.35) 0%, transparent 70%);
+      pointer-events:none;
+      opacity:.65;
+    }
+    .ticket-card[data-status="status-progress"]::after{
+      background:radial-gradient(420px 240px at 110% -20%, rgba(255,159,90,.32) 0%, transparent 70%);
+    }
+    .ticket-card[data-status="status-closed"]::after{
+      background:radial-gradient(420px 240px at 110% -20%, rgba(51,214,164,.34) 0%, transparent 70%);
+    }
+    .ticket-card:hover{
+      transform:translateY(-2px);
+      box-shadow:0 28px 80px rgba(0,0,0,.45);
+      filter:saturate(1.05);
+    }
+    [data-theme="light"] .ticket-card{
+      background:linear-gradient(180deg,#ffffff,#f5f8ff);
+      box-shadow:0 18px 40px rgba(17,35,75,.14);
+    }
+    .ticket-content{position:relative;z-index:1;}
+    .ticket-header{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    .ticket-title{margin:0;font-size:20px;font-weight:800;}
+    .badge-row{display:flex;gap:10px;flex-wrap:wrap;}
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 12px;
+      border-radius:999px;
+      font-size:13px;
+      font-weight:700;
+      letter-spacing:.12px;
+      color:var(--accent);
+      background:rgba(79,124,255,.18);
+    }
+    .badge[data-variant="status-progress"]{color:var(--accent-warm);background:rgba(255,159,90,.22);}
+    .badge[data-variant="status-closed"]{color:var(--accent-green);background:rgba(51,214,164,.22);}
+    .badge[data-variant="priority-high"]{color:var(--accent-danger);background:rgba(255,107,135,.22);}
+    .badge[data-variant="priority-medium"]{color:var(--accent-warm);background:rgba(255,159,90,.22);}
+    .badge[data-variant="priority-low"]{color:var(--accent-green);background:rgba(57,217,138,.22);}
+
+    .ticket-description{margin:14px 0;color:var(--muted);font-weight:500;white-space:pre-wrap;}
+    .ticket-info{color:var(--muted);font-weight:600;font-size:13px;}
+
+    .ticket-footer{
+      margin-top:18px;
+      padding-top:18px;
+      border-top:1px solid rgba(255,255,255,.08);
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    [data-theme="light"] .ticket-footer{border-top:1px solid rgba(17,35,75,.1);}
+    .ticket-actions{display:flex;gap:10px;flex-wrap:wrap;}
+    .ticket-action{
+      padding:9px 16px;
+      border-radius:12px;
+      border:1px solid transparent;
+      font-weight:700;
+      background:linear-gradient(180deg,#121a2a,#0e1726);
+      color:var(--txt);
+      letter-spacing:.1px;
+      transition:transform .16s ease, box-shadow .2s ease, filter .2s ease;
+      cursor:pointer;
+    }
+    .ticket-action:hover{
+      transform:translateY(-1px);
+      box-shadow:0 20px 40px rgba(0,0,0,.4);
+      filter:saturate(1.05);
+    }
+    .ticket-action.warning{background:linear-gradient(180deg,#ffb76a,#ff9f5a);color:#311503;}
+    .ticket-action.success{background:linear-gradient(180deg,#33d6a4,#1fb88a);color:#02150f;}
+    .ticket-action.danger{background:linear-gradient(180deg,#ff6b87,#ff3c5c);color:#2d0109;}
+
+    form{display:flex;flex-direction:column;gap:18px;}
+    label{font-weight:700;font-size:14px;margin-bottom:6px;}
+    input,textarea,select{
+      width:100%;
+      border:1px solid var(--stroke);
+      border-radius:15px;
+      background:linear-gradient(180deg,#121a2a,#0e1726);
+      color:var(--txt);
+      padding:14px 16px;
+      font:inherit;
+      transition:border-color .16s ease, box-shadow .18s ease;
+    }
+    select{
+      appearance:none;
+      -webkit-appearance:none;
+      -moz-appearance:none;
+      cursor:pointer;
+      padding-right:48px;
+      background-image:
+        linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+        linear-gradient(135deg, var(--muted) 50%, transparent 50%),
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,0));
+      background-position:
+        calc(100% - 24px) center,
+        calc(100% - 18px) center,
+        center;
+      background-size:7px 7px, 7px 7px, 100% 100%;
+      background-repeat:no-repeat;
+      transition:border-color .16s ease, box-shadow .18s ease, filter .16s ease;
+    }
+    select::-ms-expand{display:none;}
+    input:focus,textarea:focus,select:focus{
+      border-color:var(--accent);
+      outline:none;
+      box-shadow:0 0 0 3px rgba(79,124,255,.22);
+    }
+    [data-theme="light"] input,
+    [data-theme="light"] textarea,
+    [data-theme="light"] select{
+      background:#f6f8ff;
+    }
+    [data-theme="light"] select{
+      background-image:
+        linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+        linear-gradient(135deg, var(--muted) 50%, transparent 50%),
+        linear-gradient(180deg, rgba(15,23,38,.08), rgba(15,23,38,0));
+    }
+    select:hover{
+      filter:saturate(1.08);
+    }
+    textarea{min-height:140px;resize:vertical;}
+
+    .file-drop{
+      border:1px dashed var(--stroke);
+      border-radius:16px;
+      padding:18px;
+      text-align:center;
+      color:var(--muted);
+      font-weight:600;
+      background:linear-gradient(180deg,rgba(79,124,255,.18),rgba(79,124,255,.06));
+      position:relative;
+      overflow:hidden;
+      transition:border-color .16s ease,color .16s ease;
+    }
+    .file-drop:hover{border-color:var(--accent);color:var(--accent);}
+    .file-drop input{
+      position:absolute;
+      inset:0;
+      opacity:0;
+      cursor:pointer;
+    }
+    #filePreview{
+      display:none;
+      margin-top:10px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid var(--stroke);
+      background:linear-gradient(180deg,rgba(79,124,255,.14),rgba(79,124,255,.08));
+      color:var(--muted);
+      font-size:13px;
+      font-weight:600;
+    }
+
+    .submit-btn{
+      display:inline-flex;
+      justify-content:center;
+      align-items:center;
+      gap:10px;
+      padding:14px 18px;
+      border-radius:14px;
+      border:none;
+      font-weight:800;
+      letter-spacing:.12px;
+      background:linear-gradient(180deg,#4f7cff,#3f66ff);
+      color:#fff;
+      box-shadow:0 22px 48px rgba(79,124,255,.45);
+      cursor:pointer;
+      transition:transform .16s ease, box-shadow .2s ease, filter .16s ease;
+    }
+    .submit-btn:hover{
+      transform:translateY(-1px);
+      filter:saturate(1.05);
+      box-shadow:0 28px 60px rgba(79,124,255,.5);
+    }
+    .submit-btn:disabled{
+      opacity:.6;
+      cursor:wait;
+      transform:none;
+      box-shadow:none;
+    }
+
+    .loading{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      align-items:center;
+      color:var(--muted);
+      font-weight:600;
+      padding:70px 0;
+    }
+    .spinner{
+      width:42px;height:42px;border-radius:50%;
+      border:3px solid rgba(79,124,255,.2);
+      border-top:3px solid var(--accent);
+      animation:spin 1s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg);}}
+
+    .empty-state{
+      text-align:center;
+      padding:70px 18px;
+      border:1px dashed var(--stroke);
+      border-radius:18px;
+      color:var(--muted);
+      background:linear-gradient(180deg,#161f34,#0f1726);
+      font-weight:600;
+    }
+    [data-theme="light"] .empty-state{background:#fff;}
+    .empty-state svg{
+      width:70px;height:70px;margin-bottom:18px;opacity:.35;
+    }
+
+    .notifications{
+      position:fixed;
+      top:22px;
+      right:22px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      z-index:1200;
+      max-width:320px;
+    }
+    .notification{
+      padding:16px 18px;
+      border-radius:14px;
+      font-weight:700;
+      background:linear-gradient(180deg,#33d6a4,#1fb88a);
+      color:#02150a;
+      box-shadow:0 22px 48px rgba(33,214,164,.32);
+      animation:toast-in .3s ease;
+    }
+    .notification.error{
+      background:linear-gradient(180deg,#ff6b87,#ff3c5c);
+      color:#2d0109;
+      box-shadow:0 22px 48px rgba(255,107,135,.3);
+    }
+    @keyframes toast-in{
+      from{transform:translateX(120px);opacity:0;}
+      to{transform:translateX(0);opacity:1;}
+    }
+    .ticket-progress{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      width:100%;
+    }
+    .progress-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-weight:700;
+      font-size:13px;
+      color:var(--muted);
+    }
+    .progress-track{
+      position:relative;
+      width:100%;
+      height:10px;
+      border-radius:999px;
+      background:rgba(79,124,255,.16);
+      overflow:hidden;
+    }
+    .progress-fill{
+      position:absolute;
+      inset:0;
+      border-radius:999px;
+      background:linear-gradient(90deg,#4f7cff,#6ea0ff);
+      transform-origin:left center;
+      transition:width .3s ease;
+    }
+    .progress-fill[data-status="status-progress"]{
+      background:linear-gradient(90deg,#ffb76a,#ff9f5a);
+    }
+    .progress-fill[data-status="status-closed"]{
+      background:linear-gradient(90deg,#33d6a4,#24c296);
+    }
+    .ticket-meta-info{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px 14px;
+      font-size:12px;
+      color:var(--muted);
+      font-weight:600;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="panel">
+      <div class="panel-inner">
+        <header class="topbar">
+          <div class="brand">
+            <div class="dot"></div>
+            <div class="name">
+              <span class="ticket-icon" aria-hidden="true">🎫</span>
+              <span class="brand-main">Ortho <b>OS</b></span>
+              <span class="brand-support">Ticket System</span>
+            </div>
+          </div>
+          <nav class="top-actions">
+            <a class="dash-link" href="Ortho.OS Dashboard.html">← Dashboard</a>
+            <div class="status-chip" id="statusChip">
+              <span class="status-indicator" id="statusIndicator"></span>
+              <span id="connectionStatus">Verbunden</span>
+            </div>
+            <button class="mode" id="themeToggle" type="button" aria-label="Theme umschalten">☀️</button>
+          </nav>
+        </header>
+
+        <section class="hero">
+          <h1 id="heroTitle">Support Center</h1>
+          <p id="heroLead">Tickets erstellen, Prioritäten setzen und Fortschritte verfolgen – alles im vertrauten Ortho OS Look.</p>
+        </section>
+
+        <main class="support-flex">
+          <section class="form-shell">
+            <div class="section-head">
+              <div>
+                <h2>Ticket erstellen</h2>
+                <p>Teile alle wichtigen Details, damit das Team sofort loslegen kann.</p>
+              </div>
+            </div>
+            <form id="ticketForm" novalidate>
+              <div>
+                <label for="title">Titel *</label>
+                <input id="title" name="title" type="text" placeholder="Problem kurz beschreiben" required>
+              </div>
+              <div>
+                <label for="description">Beschreibung *</label>
+                <textarea id="description" name="description" placeholder="Was ist passiert? Welche Schritte wurden schon probiert?" required></textarea>
+              </div>
+              <div>
+                <label for="priority">Priorität</label>
+                <select id="priority" name="priority">
+                  <option value="low">Niedrig</option>
+                  <option value="medium" selected>Mittel</option>
+                  <option value="high">Hoch</option>
+                </select>
+              </div>
+              <div>
+                <label for="location">Standort</label>
+                <select id="location" name="location">
+                  <option value="">Bitte wählen…</option>
+                  <option value="Charlottenburg">Charlottenburg</option>
+                  <option value="Schöneberg">Schöneberg</option>
+                  <option value="Treptow">Treptow</option>
+                  <option value="Teltow">Teltow</option>
+                  <option value="Ludwigsfelde">Ludwigsfelde</option>
+                  <option value="Salzwedel">Salzwedel</option>
+                  <option value="Schönebeck">Schönebeck</option>
+                </select>
+              </div>
+              <div>
+                <label for="responsible">Verantwortlich</label>
+                <input id="responsible" name="responsible" type="text" placeholder="Wer kümmert sich darum?">
+              </div>
+              <div>
+                <label for="dueDate">Fälligkeitsdatum</label>
+                <input id="dueDate" name="dueDate" type="date">
+              </div>
+              <div>
+                <label for="userEmail">E-Mail für Benachrichtigung *</label>
+                <input id="userEmail" name="userEmail" type="email" placeholder="name@domain.de" required>
+              </div>
+              <div>
+                <label for="attachments">Anhänge / Screenshots</label>
+                <div class="file-drop">
+                  <input id="attachments" name="attachments" type="file" multiple accept="image/*,.pdf,.doc,.docx">
+                  <strong>📎 Dateien hier ablegen oder klicken</strong>
+                </div>
+                <div id="filePreview"></div>
+              </div>
+              <button class="submit-btn" id="submitBtn" type="submit">Ticket erstellen</button>
+            </form>
+          </section>
+
+          <section class="tickets-shell" id="ticketsShell">
+            <div class="section-head">
+              <div>
+                <h2>Tickets</h2>
+                <p>Live-Übersicht · Aktualisierung alle 30 Sekunden</p>
+              </div>
+              <div class="filters" id="filters">
+                <button class="filter-chip active" type="button" data-filter="all">Alle</button>
+                <button class="filter-chip" type="button" data-filter="open">Offen</button>
+                <button class="filter-chip" type="button" data-filter="progress">In Bearbeitung</button>
+                <button class="filter-chip" type="button" data-filter="closed">Erledigt</button>
+              </div>
+            </div>
+            <div id="ticketsList" class="tickets-list">
+              <div class="loading">
+                <div class="spinner" role="presentation"></div>
+                <span>Lade Tickets…</span>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </div>
+  <div class="notifications" id="notificationStack" aria-live="polite"></div>
+
+  <script>
+    // Base URL for API calls. Adjust the port if needed.
+    const API_URL = 'http://localhost:3000/api';
+    const SESSION_KEY = 'orthoos-session';
+    // JWT token key for Authorization header. Set on login.
+    const TOKEN_KEY = 'orthoos-token';
+
+    let tickets = [];
+    let currentFilter = 'all';
+    let lastConnectionState = null;
+
+    const priorityMap = {
+      low: { text: 'Niedrig', badge: 'priority-low' },
+      medium: { text: 'Mittel', badge: 'priority-medium' },
+      high: { text: 'Hoch', badge: 'priority-high' }
+    };
+    const statusMap = {
+      open: { text: 'Offen', badge: 'status-open' },
+      progress: { text: 'In Bearbeitung', badge: 'status-progress' },
+      closed: { text: 'Erledigt', badge: 'status-closed' }
+    };
+    const progressMap = {
+      open: { percent: 25, label: 'Gestartet' },
+      progress: { percent: 65, label: 'In Bearbeitung' },
+      closed: { percent: 100, label: 'Abgeschlossen' }
+    };
+
+    const ticketsShell = document.getElementById('ticketsShell');
+    const ticketsListEl = document.getElementById('ticketsList');
+    const filtersEl = document.getElementById('filters');
+    const notificationStack = document.getElementById('notificationStack');
+    const themeToggle = document.getElementById('themeToggle');
+    const attachmentsInput = document.getElementById('attachments');
+    const filePreview = document.getElementById('filePreview');
+    const ticketForm = document.getElementById('ticketForm');
+    const heroTitle = document.getElementById('heroTitle');
+    const heroLead = document.getElementById('heroLead');
+    const statusChip = document.getElementById('statusChip');
+
+    function loadSession() {
+      try {
+        const raw = localStorage.getItem(SESSION_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (error) {
+        console.warn('Session konnte nicht gelesen werden:', error);
+        return null;
+      }
+    }
+
+    const session = loadSession();
+    const isAdminView = !!(session && (session.username?.toLowerCase() === 'daniel' || session.role === 'admin'));
+
+    // Restrict fields for non‑admin users. Front‑desk and other roles should
+    // only provide a title, problem description and contact email. Priority,
+    // location, responsible person and due date are decided by the admin.
+    if (!isAdminView) {
+      // Helper to hide the parent form-group of an input/select
+      function hideField(id) {
+        const field = document.getElementById(id);
+        if (field && field.parentElement) {
+          field.parentElement.style.display = 'none';
+        }
+      }
+      hideField('priority');
+      hideField('location');
+      hideField('responsible');
+      hideField('dueDate');
+    }
+
+    if (session?.name && heroTitle) {
+      heroTitle.textContent = isAdminView ? `Support Center · ${session.name}` : `Ticket für ${session.name} erstellen`;
+    }
+    if (!isAdminView) {
+      document.body.classList.add('support--requester');
+      if (heroTitle && session?.name) {
+        heroTitle.textContent = `Support für ${session.name}`;
+      }
+      if (heroLead) {
+        heroLead.textContent = 'Reiche dein Anliegen ein und verfolge den Fortschritt als Fortschrittsbalken.';
+      }
+    }
+
+    function applyTheme(theme) {
+      const html = document.documentElement;
+      const isLight = theme === 'light';
+      html.classList.toggle('light', isLight);
+      html.dataset.theme = isLight ? 'light' : 'dark';
+      if (themeToggle) {
+        themeToggle.textContent = isLight ? '🌙' : '☀️';
+        themeToggle.setAttribute('aria-label', isLight ? 'Dunkles Theme aktivieren' : 'Helles Theme aktivieren');
+      }
+      localStorage.setItem('ortho-support-theme', isLight ? 'light' : 'dark');
+      localStorage.setItem('orthoos-theme', isLight ? 'light' : 'dark');
+    }
+
+    function toggleTheme() {
+      const nextTheme = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+      applyTheme(nextTheme);
+    }
+
+    const savedTheme = localStorage.getItem('ortho-support-theme')
+      || localStorage.getItem('orthoos-theme')
+      || 'dark';
+    applyTheme(savedTheme);
+    if (themeToggle) {
+      themeToggle.addEventListener('click', toggleTheme);
+      themeToggle.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          toggleTheme();
+        }
+      });
+    }
+    window.toggleSupportTheme = toggleTheme;
+
+    if (isAdminView && filtersEl) {
+      filtersEl.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-filter]');
+        if (!button) return;
+        currentFilter = button.dataset.filter;
+        filtersEl.querySelectorAll('[data-filter]').forEach((btn) => {
+          btn.classList.toggle('active', btn === button);
+        });
+        renderTickets();
+      });
+    }
+
+    if (attachmentsInput && filePreview) {
+      attachmentsInput.addEventListener('change', (event) => {
+        const files = Array.from(event.target.files || []);
+        if (files.length === 0) {
+          filePreview.style.display = 'none';
+          filePreview.innerHTML = '';
+          return;
+        }
+        filePreview.style.display = 'block';
+        filePreview.innerHTML = files.map((file) => `📄 ${file.name}`).join('<br>');
+      });
+    }
+
+    if (ticketForm) {
+      ticketForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const submitBtn = document.getElementById('submitBtn');
+        if (!form.reportValidity()) {
+          showNotification('Bitte alle Pflichtfelder ausfüllen.', 'error');
+          return;
+        }
+        if (!submitBtn) return;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Wird erstellt…';
+
+        try {
+          const formData = new FormData(form);
+          if (session?.name) formData.append('requesterName', session.name);
+          if (session?.role) formData.append('requesterRole', session.role);
+          const token = localStorage.getItem(TOKEN_KEY);
+          const response = await fetch(`${API_URL}/tickets`, {
+            method: 'POST',
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+            body: formData
+          });
+          if (!response.ok) throw new Error('Fehler beim Erstellen');
+
+          await response.json();
+          showNotification(isAdminView ? 'Ticket erfasst – Übersicht aktualisiert.' : 'Ticket eingereicht – das Support-Team meldet sich.');
+          form.reset();
+          if (attachmentsInput) {
+            attachmentsInput.dispatchEvent(new Event('change'));
+          }
+          if (isAdminView) {
+            await loadTickets();
+          }
+        } catch (error) {
+          console.error('Ticket erstellen fehlgeschlagen:', error);
+          showNotification('Ticket konnte nicht erstellt werden.', 'error');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Ticket erstellen';
+        }
+      });
+    }
+
+    if (isAdminView && ticketsListEl) {
+      ticketsListEl.addEventListener('click', (event) => {
+        const actionButton = event.target.closest('[data-action]');
+        if (!actionButton) return;
+
+        const { id, action } = actionButton.dataset;
+        if (!id) return;
+
+        if (action === 'delete') {
+          if (confirm('Möchtest du dieses Ticket wirklich löschen?')) {
+            deleteTicket(id);
+          }
+          return;
+        }
+
+        if (action === 'progress') {
+          updateStatus(id, 'progress');
+        } else if (action === 'closed') {
+          updateStatus(id, 'closed');
+        }
+      });
+    }
+
+    function showLoadingState() {
+      if (!ticketsListEl) return;
+      ticketsListEl.innerHTML = `
+        <div class="loading">
+          <div class="spinner" role="presentation"></div>
+          <span>Lade Tickets…</span>
+        </div>
+      `;
+    }
+
+    async function checkConnection() {
+      try {
+        const response = await fetch(`${API_URL}/tickets`, { method: 'HEAD' });
+        if (!response.ok) throw new Error('Verbindung fehlgeschlagen');
+        setConnectionState(true);
+      } catch (error) {
+        console.warn('API nicht erreichbar:', error);
+        setConnectionState(false);
+      }
+    }
+
+    function setConnectionState(isOnline) {
+      if (!statusChip || !statusChip.isConnected) return;
+      const indicator = document.getElementById('statusIndicator');
+      const statusText = document.getElementById('connectionStatus');
+      indicator.classList.toggle('offline', !isOnline);
+      statusText.textContent = isOnline ? 'Verbunden' : 'Offline';
+      if (lastConnectionState !== isOnline && !isOnline) {
+        showNotification('Keine Verbindung zum Server.', 'error');
+      }
+      lastConnectionState = isOnline;
+    }
+
+    async function loadTickets() {
+      if (!isAdminView) return;
+      if (tickets.length === 0) {
+        showLoadingState();
+      }
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        const response = await fetch(`${API_URL}/tickets`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+        if (!response.ok) throw new Error('Fehler beim Laden');
+        const data = await response.json();
+        tickets = Array.isArray(data.tickets) ? data.tickets : [];
+        renderTickets();
+        if (isAdminView) {
+          setConnectionState(true);
+        }
+      } catch (error) {
+        console.error('Tickets konnten nicht geladen werden:', error);
+        if (isAdminView) {
+          setConnectionState(false);
+        }
+        if (tickets.length === 0) {
+          showEmptyState();
+        }
+      }
+    }
+
+    function showEmptyState() {
+      if (!ticketsListEl) return;
+      ticketsListEl.innerHTML = `
+        <div class="empty-state">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          <p>Aktuell liegen keine Tickets vor.</p>
+        </div>
+      `;
+    }
+
+    function escapeHtml(value) {
+      return value == null
+        ? ''
+        : String(value)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function formatDate(value) {
+      if (!value) return '';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '';
+      return date.toLocaleDateString('de-DE');
+    }
+
+    function renderTickets() {
+      let filteredTickets = tickets;
+      if (isAdminView) {
+        if (currentFilter !== 'all') {
+          filteredTickets = filteredTickets.filter((ticket) => ticket.status === currentFilter);
+        }
+      } else if (session?.name) {
+        const requesterName = session.name.toLowerCase();
+        const ownTickets = filteredTickets.filter((ticket) => {
+          const requester = (ticket.requesterName || ticket.customerName || '').toLowerCase();
+          return requester && requester === requesterName;
+        });
+        if (ownTickets.length > 0) {
+          filteredTickets = ownTickets;
+        }
+      }
+
+      if (!ticketsListEl) return;
+      if (filteredTickets.length === 0) {
+        showEmptyState();
+        return;
+      }
+
+      ticketsListEl.innerHTML = filteredTickets.map((ticket) => {
+        const priority = priorityMap[ticket.priority] || priorityMap.medium;
+        const status = statusMap[ticket.status] || statusMap.open;
+        const progress = progressMap[ticket.status] || progressMap.open;
+        const safeTitle = escapeHtml(ticket.title || 'Ohne Titel');
+        const safeDescription = escapeHtml(ticket.description || 'Keine Beschreibung hinterlegt.').replace(/\n/g, '<br>');
+        const ticketIdentifier = ticket.id ?? ticket._id ?? '';
+        const safeId = escapeHtml(ticketIdentifier);
+        const canMutate = isAdminView && Boolean(ticketIdentifier);
+
+        const created = formatDate(ticket.createdDate || ticket.createdAt);
+        const due = formatDate(ticket.dueDate);
+        const timeline = [];
+        if (created) timeline.push(`Erstellt: ${created}`);
+        if (due) timeline.push(`Fällig: ${due}`);
+
+        const infoItems = [
+          ticket.location ? `📍 ${escapeHtml(ticket.location)}` : '',
+          ticket.responsible ? `👤 ${escapeHtml(ticket.responsible)}` : '',
+          Array.isArray(ticket.attachments) && ticket.attachments.length
+            ? `📎 ${ticket.attachments.length} Anhang(e)`
+            : ''
+        ].filter(Boolean);
+
+        const actions = [];
+        if (canMutate && ticket.status === 'open') {
+          actions.push(`<button class="ticket-action warning" data-action="progress" data-id="${safeId}">In Bearbeitung</button>`);
+        }
+        if (canMutate && ticket.status === 'progress') {
+          actions.push(`<button class="ticket-action success" data-action="closed" data-id="${safeId}">✓ Erledigt</button>`);
+        }
+        if (canMutate && ticket.status === 'closed') {
+          actions.push(`<button class="ticket-action danger" data-action="delete" data-id="${safeId}">Löschen</button>`);
+        }
+
+        const footerSecondary = canMutate
+          ? `<div class="ticket-actions">${actions.join('')}</div>`
+          : `<div class="ticket-progress">
+               <div class="progress-head">
+                 <span>${progress.label}</span>
+                 <span>${progress.percent}%</span>
+               </div>
+               <div class="progress-track">
+                 <div class="progress-fill" data-status="${status.badge}" style="width:${progress.percent}%"></div>
+               </div>
+             </div>`;
+
+        return `
+          <article class="ticket-card" data-status="${status.badge}">
+            <div class="ticket-content">
+              <header class="ticket-header">
+                <div>
+                  <h3 class="ticket-title">${safeTitle}</h3>
+                  <div class="badge-row">
+                    <span class="badge" data-variant="${priority.badge}">${priority.text}</span>
+                    <span class="badge" data-variant="${status.badge}">${status.text}</span>
+                  </div>
+                </div>
+              </header>
+              <div class="ticket-description">${safeDescription}</div>
+              ${infoItems.length ? `<div class="ticket-meta-info">${infoItems.join(' · ')}</div>` : ''}
+              <footer class="ticket-footer">
+                ${timeline.length ? `<div class="ticket-info">${timeline.join(' · ')}</div>` : '<div class="ticket-info"></div>'}
+                ${footerSecondary}
+              </footer>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    async function updateStatus(id, newStatus) {
+      if (!isAdminView) return;
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        const response = await fetch(`${API_URL}/tickets/${id}/status`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify({ status: newStatus })
+        });
+        if (!response.ok) throw new Error('Status konnte nicht aktualisiert werden');
+        await response.json();
+        showNotification(
+          newStatus === 'closed'
+            ? 'Ticket erledigt – Benachrichtigung gesendet.'
+            : 'Ticketstatus aktualisiert.'
+        );
+        await loadTickets();
+      } catch (error) {
+        console.error('Status-Update fehlgeschlagen:', error);
+        showNotification('Status konnte nicht aktualisiert werden.', 'error');
+      }
+    }
+
+    async function deleteTicket(id) {
+      if (!isAdminView) return;
+      try {
+        const token = localStorage.getItem(TOKEN_KEY);
+        const response = await fetch(`${API_URL}/tickets/${id}`, {
+          method: 'DELETE',
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+        if (!response.ok) throw new Error('Ticket konnte nicht gelöscht werden');
+        showNotification('Ticket gelöscht.');
+        await loadTickets();
+      } catch (error) {
+        console.error('Ticket löschen fehlgeschlagen:', error);
+        showNotification('Ticket konnte nicht gelöscht werden.', 'error');
+      }
+    }
+
+    function showNotification(message, type = 'success') {
+      if (!notificationStack) return;
+      const note = document.createElement('div');
+      note.className = `notification ${type === 'error' ? 'error' : ''}`;
+      note.textContent = message;
+      notificationStack.appendChild(note);
+      setTimeout(() => {
+        note.remove();
+      }, 4200);
+    }
+
+    if (isAdminView) {
+      checkConnection();
+    }
+    loadTickets();
+    setInterval(loadTickets, 30000);
+  </script>
+</body>
+</html>
